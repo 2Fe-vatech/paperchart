@@ -4,27 +4,22 @@ import argparse
 import numpy as np
 from tqdm import tqdm
 
+def erase_lines(img, direction):
+    assert direction in ["horizontal", "vertical"]
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+    
+    clean = thresh.copy()
 
-def houghLines(img, thr):
-    dst = cv2.Canny(img, 50, 150, apertureSize=3)
-    lines = cv2.HoughLines(dst, 1, np.pi / 180, thr)
+    kernal = cv2.getStructuringElement(cv2.MORPH_RECT, (1,30) if direction == "vertical" else (15,1))
+    detect = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernal, iterations=2)
+    cnts = cv2.findContours(detect, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = cnts[0] if len(cnts) == 2 else cnts[1]
 
-    new_lines = []
-    for line in lines:
-        r, theta = line[0]
-        a = np.cos(theta)
-        b = np.sin(theta)
-        x0 = a * r
-        y0 = b * r
-        x1 = int(x0 + 1000 * (-b))
-        y1 = int(y0 + 1000 * a)
-        x2 = int(x0 - 1000 * (-b))
-        y2 = int(y1 + 1000 * a)
+    for c in cnts:
+        cv2.drawContours(clean, [c], -1, 0, 2)
 
-        new_lines.append([(x1, y1), (x2, y2)])
-
-    return new_lines
-
+    return clean
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -54,13 +49,16 @@ if __name__ == "__main__":
     kernel = np.ones((3, 3), np.uint8)
     for filename in tqdm(os.listdir(targetdir)):
         if os.path.splitext(filename)[-1] in [".bmp", ".jpg", ".BMP"]:
-            img = cv2.imread(os.path.join(targetdir, filename), cv2.IMREAD_GRAYSCALE)
+            img = cv2.imread(os.path.join(targetdir, filename), cv2.IMREAD_COLOR)
             # dst = cv2.bitwise_not(dst)
             # dst = cv2.dilate(img, kernel, iterations=1)
             # dst = cv2.erode(dst, kernel, iterations=1)
             # img =cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
             # dst = cv2.fastNlMeansDenoising(img, None, 10, 7, 21)
             # lines = houghLines(img, 140)
-            dst = cv2.Canny(img, 50, 150, apertureSize=3)
+            # dst = cv2.Canny(img, 50, 150, apertureSize=3)
+            # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            img = erase_lines(img, direction="vertical")
+
             if args.save:
-                cv2.imwrite(os.path.join(args.results, filename), dst)
+                cv2.imwrite(os.path.join(args.results, filename), img)

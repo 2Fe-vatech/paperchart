@@ -138,7 +138,7 @@ if __name__ == "__main__":
                         f"[category error] ann cat : {cat_id - 1}, cat : {gtlabel[idx]}, image name : {imageId2Name[image_id]}, annotation id : {annid}"
                     )
 
-                if bbox[3] < 14.0:
+                if bbox[3] < 13.0:
                     print(
                         f"[height error] height : {bbox[3]}, image name : {imageId2Name[image_id]}, annotation id : {annid}"
                     )
