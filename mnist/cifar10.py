@@ -13,14 +13,14 @@ transform = transforms.Compose(
     [transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
 )
 
-trainset = numberDataset("datasets/numbers/train", transform=transform)
+trainset = numberDataset("datasets/padding/train", transform=transform)
 # trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
 #                                         download=True, transform=transform)
 trainloader = torch.utils.data.DataLoader(
     trainset, batch_size=11, shuffle=True, num_workers=2
 )
 
-testset = numberDataset("datasets/numbers/valid", transform=transform)
+testset = numberDataset("datasets/padding/valid", transform=transform)
 # testset = torchvision.datasets.CIFAR10(root='./data', train=False,
 #                                        download=True, transform=transform)
 testloader = torch.utils.data.DataLoader(
@@ -33,15 +33,16 @@ classes = ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
 net = Net()
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=0.00001, momentum=0.9)
+optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
 if os.path.isfile("./cifar_net.pth"):
     net.load_state_dict(torch.load("cifar_net.pth"))
 
-for epoch in range(20):  # 데이터셋을 수차례 반복합니다.
+for epoch in range(10):  # 데이터셋을 수차례 반복합니다.
     running_loss = 0.0
-    # net.train()
+
     for i, data in enumerate(trainloader, 0):
+        
         # [inputs, labels]의 목록인 data로부터 입력을 받은 후;
         inputs, labels = data
 
@@ -58,6 +59,7 @@ for epoch in range(20):  # 데이터셋을 수차례 반복합니다.
         # 통계를 출력합니다.
         running_loss += loss.item()
         if i % 100 == 99:  # print every 100 mini-batches
+            # net.eval()
             print("[%d, %5d] loss: %.3f" % (epoch + 1, i + 1, running_loss / 100))
             running_loss = 0.0
 
@@ -73,6 +75,7 @@ for epoch in range(20):  # 데이터셋을 수차례 반복합니다.
                     accuracy.item() * 100, correct, len(testset)
                 )
             )
+            # net.train()
 
 print("Finished Training")
 

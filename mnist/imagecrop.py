@@ -12,6 +12,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "-t", "--target", help="data type [train, valid]", choices=["train", "valid"]
     )
+    parser.add_argument(
+        "-p", "--padding", help="padding for crop", type=int, default=0
+    )
     parser.add_argument("-r", "--results", help="results path", default="croppedimages")
     args = parser.parse_args()
 
@@ -56,7 +59,11 @@ if __name__ == "__main__":
         img = cv2.imread(os.path.join(basedir, args.target, imageId2Name[imgid]))
         for ann in annsbyimg:
             bbox = np.array(ann["bbox"], dtype=int)
-            croppedimage = img[bbox[1] : bbox[1] + bbox[3], bbox[0] : bbox[0] + bbox[2]]
+            x1 = bbox[1] - args.padding if bbox[1] - args.padding >= 0 else 0
+            x2 = bbox[1] + bbox[3] + args.padding if bbox[1] + bbox[3] + args.padding <= img.shape[0] else img.shape[0]
+            y1 = bbox[0] - args.padding if bbox[0] - args.padding >= 0 else 0
+            y2 = bbox[0] + bbox[2] + args.padding if bbox[0] + bbox[2] + args.padding <= img.shape[1] else img.shape[1]
+            croppedimage = img[x1:x2, y1:y2]
 
             cv2.imwrite(
                 os.path.join(

@@ -32,7 +32,7 @@ class numberDataset(Dataset):
                 img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
                 # img = self.randomPadding(img, 5)
                 if train:
-                    img = self.randomRotate(img, 45)
+                    img = self.randomRotate(img, 20)
                 # img = self.randomCrop(img)
                 img = img / 255
                 img = self.resize(img, (32, 32))
