@@ -126,8 +126,8 @@ if __name__ == "__main__":
             images.append(
                 {
                     "file_name": filename,
-                    "height": croppedimage.shape[0] + args.padding * 2,
-                    "width": croppedimage.shape[1] + args.padding * 2,
+                    "height": croppedimage.shape[0],
+                    "width": croppedimage.shape[1],
                     "id": imageids,
                 }
             )
