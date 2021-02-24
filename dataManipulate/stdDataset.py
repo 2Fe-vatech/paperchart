@@ -5,8 +5,6 @@ import numpy as np
 
 from tqdm import tqdm
 from common import loadAnns, saveAnns
-from datasetinfo import getImageSizesInDataset
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -26,16 +24,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     basedir = os.path.abspath(os.path.expanduser(args.basedir))
-    # imageSizes = getImageSizesInDataset(basedir, args.targets)
-
-    # small_area = 0
-
-    # for idx, size in enumerate(imageSizes):
-    #     area = size[0] * size[1]
-
-    #     if idx == 0 or area < small_area:
-    #         small_area = area
-    #         std_size = imageSizes[idx]
 
     imageSizes = [(2480, 3507), (793, 1121)]
     std_size = (793, 1121)

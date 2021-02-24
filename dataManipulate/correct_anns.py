@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     annotationids = 30000
 
-    for ann in anns:
+    for ann in tqdm(anns):
         annotationids += 1
         ann["id"] = annotationids
         ann["area"] = float(ann["bbox"][2]) * float(ann["bbox"][3])
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     annids = []
 
-    for ann in anns:
+    for ann in tqdm(anns):
         assert ann["id"] not in annids, ann["id"] + " exist two more"
         annids.append(ann["id"])
     assert len(annids) == len(anns), "error "

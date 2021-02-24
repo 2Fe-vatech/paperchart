@@ -94,61 +94,61 @@ if __name__ == "__main__":
         print("Nothing overlapping")
 
     # number of annotations per date and image check
-    print("number of annotations per date and image check")
-    flag = False
-    func = seperate_by_img if args.type == "crop" else seperate_by_date
-    numberOfAnnsInImage = 1 if args.type == "crop" else 6
+    # print("number of annotations per date and image check")
+    # flag = False
+    # func = seperate_by_img if args.type == "crop" else seperate_by_date
+    # numberOfAnnsInImage = 1 if args.type == "crop" else 6
 
-    for image_id, annsperimg in tqdm(func(anns).items()):
-        if len(annsperimg) != numberOfAnnsInImage:
-            flag = True
-            print(
-                f"number of dates : {len(annsperimg)}, image name : {imageId2Name[image_id]}"
-            )
+    # for image_id, annsperimg in tqdm(func(anns).items()):
+    #     if len(annsperimg) != numberOfAnnsInImage:
+    #         flag = True
+    #         print(
+    #             f"number of dates : {len(annsperimg)}, image name : {imageId2Name[image_id]}"
+    #         )
 
-        for annid, annperimg in annsperimg.items():
-            gtlabel = []
+    #     for annid, annperimg in annsperimg.items():
+    #         gtlabel = []
 
-            for gtpart in (
-                imageId2Name[image_id]
-                .replace(" ", ".")
-                .replace("_", ".")
-                .split(".")[0:3]
-            ):
-                for gt in gtpart:
-                    gtlabel.append(int(gt))
+    #         for gtpart in (
+    #             imageId2Name[image_id]
+    #             .replace(" ", ".")
+    #             .replace("_", ".")
+    #             .split(".")[0:3]
+    #         ):
+    #             for gt in gtpart:
+    #                 gtlabel.append(int(gt))
 
-            if len(annperimg["subbox"]) != 8:
-                flag = True
-                print(
-                    f"number of numbers : {str(len(annperimg['subbox']))}, image name : {imageId2Name[image_id]}, annotation id : {annid}"
-                )
+    #         if len(annperimg["subbox"]) != 8:
+    #             flag = True
+    #             print(
+    #                 f"number of numbers : {str(len(annperimg['subbox']))}, image name : {imageId2Name[image_id]}, annotation id : {annid}"
+    #             )
 
-            # real label and annot label different check
-            legacy_x = -100
-            for idx, ann in enumerate(annperimg["subbox"]):
-                cat_id, bbox = list(ann.items())[0]
+    #         # real label and annot label different check
+    #         legacy_x = -100
+    #         for idx, ann in enumerate(annperimg["subbox"]):
+    #             cat_id, bbox = list(ann.items())[0]
 
-                if len(gtlabel) <= idx:
-                    print(
-                        f"[category error] ann cat : {cat_id - 1}, image name : {imageId2Name[image_id]}, annotation id : {annid}"
-                    )
-                elif cat_id - 1 != gtlabel[idx]:
-                    print(
-                        f"[category error] ann cat : {cat_id - 1}, cat : {gtlabel[idx]}, image name : {imageId2Name[image_id]}, annotation id : {annid}"
-                    )
+    #             if len(gtlabel) <= idx:
+    #                 print(
+    #                     f"[category error] ann cat : {cat_id - 1}, image name : {imageId2Name[image_id]}, annotation id : {annid}"
+    #                 )
+    #             elif cat_id - 1 != gtlabel[idx]:
+    #                 print(
+    #                     f"[category error] ann cat : {cat_id - 1}, cat : {gtlabel[idx]}, image name : {imageId2Name[image_id]}, annotation id : {annid}"
+    #                 )
 
-                if bbox[3] < 13.0:
-                    print(
-                        f"[height error] height : {bbox[3]}, image name : {imageId2Name[image_id]}, annotation id : {annid}"
-                    )
+    #             if bbox[3] < 13.0:
+    #                 print(
+    #                     f"[height error] height : {bbox[3]}, image name : {imageId2Name[image_id]}, annotation id : {annid}"
+    #                 )
 
-                if abs(legacy_x - bbox[0]) <= 2:
-                    print(
-                        f"[height error] x_coord0 : {legacy_x}, x_coord1 : {bbox[0]}, image name : {imageId2Name[image_id]}, annotation id : {annid}"
-                    )
+    #             if abs(legacy_x - bbox[0]) <= 2:
+    #                 print(
+    #                     f"[height error] x_coord0 : {legacy_x}, x_coord1 : {bbox[0]}, image name : {imageId2Name[image_id]}, annotation id : {annid}"
+    #                 )
 
-                legacy_x = bbox[0]
+    #             legacy_x = bbox[0]
 
     if flag == False:
         print("Nothing in annotations")

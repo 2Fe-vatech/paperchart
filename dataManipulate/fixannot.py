@@ -6,12 +6,12 @@ from tqdm import tqdm
 from common import loadAnns, saveAnns
 
 
-def isboxinbox(smallbox, bigbox):
+def isboxinbox(smallbox, bigbox, margin=0):
     return (
-        smallbox[0] >= bigbox[0]
-        and smallbox[0] + smallbox[2] <= bigbox[0] + bigbox[2]
-        and smallbox[1] >= bigbox[1]
-        and smallbox[1] + smallbox[3] <= bigbox[1] + bigbox[3]
+        smallbox[0] >= bigbox[0] - margin
+        and (smallbox[0] + smallbox[2]) <= (bigbox[0] + bigbox[2]) + margin
+        and smallbox[1] >= bigbox[1] - margin
+        and (smallbox[1] + smallbox[3]) <= (bigbox[1] + bigbox[3]) + margin
     )
 
 

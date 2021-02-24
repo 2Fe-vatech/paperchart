@@ -57,9 +57,9 @@ if __name__ == "__main__":
         baseimage, baseimage_w, baseimage_h, baseimage_area = getimageinfo(imagepath)
 
         if baseimage_area > bgimage_area:
-            bgimage = cv2.resize(bgimage, (baseimage_h, baseimage_w))
+            bgimage = cv2.resize(bgimage, (baseimage_w, baseimage_h))
         else:
-            baseimage = cv2.resize(baseimage, (bgimage_h, bgimage_w))
+            baseimage = cv2.resize(baseimage, (bgimage_w, bgimage_h))
 
         assert baseimage.shape == bgimage.shape, (
             str(baseimage.shape) + " != " + str(bgimage.shape)
